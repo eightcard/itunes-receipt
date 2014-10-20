@@ -93,7 +93,6 @@ describe Itunes::Receipt do
         receipt.expires_date.should be_nil
         receipt.receipt_data.should be_nil
         receipt.itunes_env.should == :production
-        puts receipt.cancellation_date
 
         # Those attributes are not returned from iTunes Connect Sandbox
         receipt.app_item_id.should be_nil
