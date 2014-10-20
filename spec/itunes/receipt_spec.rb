@@ -75,7 +75,7 @@ describe Itunes::Receipt do
 
       it 'should not be an application receipt' do
         receipt = Itunes::Receipt.verify! 'valid_application'
-        receipt.application_receipt?.should be_false
+        receipt.application_receipt?.should be_falsey
       end
 
       it 'should return valid Receipt instance' do
@@ -93,6 +93,7 @@ describe Itunes::Receipt do
         receipt.expires_date.should be_nil
         receipt.receipt_data.should be_nil
         receipt.itunes_env.should == :production
+        puts receipt.cancellation_date
 
         # Those attributes are not returned from iTunes Connect Sandbox
         receipt.app_item_id.should be_nil
@@ -107,7 +108,7 @@ describe Itunes::Receipt do
 
       it 'should be an application receipt' do
         receipt = Itunes::Receipt.verify! 'valid_application'
-        receipt.application_receipt?.should be_true
+        receipt.application_receipt?.should be_truthy
       end
 
       it 'should return valid Receipt instance' do
@@ -149,6 +150,18 @@ describe Itunes::Receipt do
         # Those attributes are not returned from iTunes Connect Sandbox
         receipt.app_item_id.should be_nil
         receipt.version_external_identifier.should be_nil
+      end
+    end
+
+    context 'when cancel receipt' do
+      before do
+        fake_json :cancelled_application
+      end
+
+      it 'should return cancellation_date' do
+        receipt = Itunes::Receipt.verify! 'cancelled_application'
+        receipt.in_app[0].cancellation_date.should == Time.utc(2013, 11, 26, 6, 58, 48)
+        receipt.latest.last.cancellation_date.should == Time.utc(2013, 11, 26, 6, 58, 48)
       end
     end
 
