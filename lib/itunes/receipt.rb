@@ -47,7 +47,8 @@ module Itunes
       :request_date_pst,
       :transaction_id,
       :version_external_identifier,
-      :web_order_line_item_id
+      :web_order_line_item_id,
+      :cancellation_date,
     )
 
     def initialize(attributes = {})
@@ -118,6 +119,9 @@ module Itunes
       @transaction_id = receipt_attributes[:transaction_id]
       @version_external_identifier = receipt_attributes[:version_external_identifier]
       @web_order_line_item_id = receipt_attributes[:web_order_line_item_id]
+      @cancellation_date = if receipt_attributes[:cancellation_date]
+         Time.parse receipt_attributes[:cancellation_date].sub('Etc/GMT', 'GMT')
+      end
     end
 
     def application_receipt?
